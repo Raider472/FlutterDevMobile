@@ -4,7 +4,7 @@
 "configurations": [
 {
 "name": "Terminal",
-"program": "intro.dart", // <=== NOM DU FICHIER A EXECUTER
+"program": "./src/intro.dart", // <=== NOM DU FICHIER A EXECUTER
 "request": "launch",
 "type": "dart",
 "console": "terminal"
