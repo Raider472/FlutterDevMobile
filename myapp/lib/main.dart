@@ -27,24 +27,45 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pokedex = <Pokemon>[
+      // <== liste finale, contenu constant
+      Pokemon('Artikodin', Icons.ac_unit),
+      Pokemon('Sulfura', Icons.sunny),
+      Pokemon('Electhor', Icons.thunderstorm),
+      Pokemon('Mewtwo', Icons.remove_red_eye),
+    ];
     return Scaffold(
       appBar: AppBar(title: const Text("Yepa")),
       body: Center(
         child: Column(
-          children: const [
-            TheAmazingRow(
-              label: "Yepa",
-              icon: Icons.snowboarding,
+          children: [
+            const Spacer(
+              flex: 2,
             ),
-            SizedBox(height: 16),
-            TheAmazingRow(
-              label: "Yopo",
-              icon: Icons.cloud,
+            const SizedBox(
+              width: 200,
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: "Ton Texte",
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.only(left: 20.0, right: 20.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    borderSide: BorderSide(color: Colors.blue),
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 16),
-            TheAmazingRow(
-              label: "Yolo",
-              icon: Icons.sunny,
+            const Spacer(
+              flex: 2,
+            ),
+            for (final Pokemon item in pokedex)
+              TheAmazingRow(
+                label: item.nom,
+                icon: item.image,
+              ),
+            const Spacer(
+              flex: 2,
             ),
           ],
         ),
@@ -101,16 +122,10 @@ class TheAmazingRow extends StatelessWidget {
 }
 
 class Pokemon {
-  IconData image_;
-  String nom_;
+  final IconData image;
+  final String nom;
 
-  Pokemon({this.image_, this.nom_});
+  Pokemon(this.nom, this.image);
 
-  String get nom {
-    return nom_ ?? "Pas de nom";
-  }
-
-  IconData get image {
-    return image_;
-  }
+  String get nomMaj => nom.toUpperCase();
 }
