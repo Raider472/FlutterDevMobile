@@ -90,7 +90,7 @@ class TheAmazingRow extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.black.withOpacity(0.3),
           borderRadius: BorderRadius.circular(80)),
-      margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+      margin: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 12,
