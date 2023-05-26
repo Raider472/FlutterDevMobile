@@ -70,10 +70,13 @@ class _MyAppState extends State<MyApp> {
                       child: IconButton(
                           icon: const Icon(Icons.add),
                           onPressed: () {
+                            final nameToAdd = controller.text;
                             setState(() {
-                              pokedex.add(
-                                const Pokemon('Test', Icons.question_mark),
+                              pokedex.insert(
+                                0,
+                                Pokemon(nameToAdd, Icons.question_mark),
                               );
+                              controller.clear();
                             });
                           }),
                     )
