@@ -72,11 +72,13 @@ class _MyAppState extends State<MyApp> {
                           onPressed: () {
                             final nameToAdd = controller.text;
                             setState(() {
-                              pokedex.insert(
-                                0,
-                                Pokemon(nameToAdd, Icons.question_mark),
-                              );
-                              controller.clear();
+                              if (nameToAdd.length >= 3) {
+                                pokedex.insert(
+                                  0,
+                                  Pokemon(nameToAdd, Icons.question_mark),
+                                );
+                                controller.clear();
+                              } else {}
                             });
                           }),
                     )
