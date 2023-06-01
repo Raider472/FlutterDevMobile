@@ -15,6 +15,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final TextEditingController controller;
+
   @override
   void initState() {
     controller = TextEditingController();
@@ -28,71 +29,111 @@ class _MyAppState extends State<MyApp> {
   }
 
   final pokedex = <Pokemon>[
-    // <== liste finale, contenu constant
     const Pokemon('Artikodin', Icons.ac_unit),
     const Pokemon('Sulfura', Icons.sunny),
     const Pokemon('Electhor', Icons.thunderstorm),
     const Pokemon('Mewtwo', Icons.remove_red_eye),
   ];
 
+  bool _isNameExists(String name) {
+    final lowercaseName = name.toLowerCase();
+    for (final Pokemon item in pokedex) {
+      if (item.nom.toLowerCase() == lowercaseName) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        // <== définit le thème Light
         brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
-        // <== définit le thème Dark
         brightness: Brightness.dark,
       ),
       themeMode: ThemeMode.dark,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Premier projet'),
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+      home: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Premier projet'),
+            ),
+            body: SingleChildScrollView(
+              child: Center(
+                child: Column(
                   children: [
-                    Expanded(
-                      child: TextField(
-                        controller: controller,
-                        decoration: const InputDecoration(
-                          labelText: 'Ecrivez un nom',
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: controller,
+                            decoration: const InputDecoration(
+                              labelText: 'Ecrivez un nom',
+                            ),
+                          ),
                         ),
-                      ),
+                        Flexible(
+                          child: IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              final nameToAdd = controller.text;
+                              setState(() {
+                                if (nameToAdd.length >= 3 &&
+                                    _isNameExists(nameToAdd) == false) {
+                                  pokedex.insert(
+                                    0,
+                                    Pokemon(nameToAdd, Icons.question_mark),
+                                  );
+                                  controller.clear();
+                                } else {
+                                  if (nameToAdd.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Please enter a name.'),
+                                      ),
+                                    );
+                                  } else if (nameToAdd.length < 3) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'The name should be equal or more than 3 characters'),
+                                      ),
+                                    );
+                                  } else if (_isNameExists(nameToAdd)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('This name already exists.'),
+                                      ),
+                                    );
+                                  }
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                    Flexible(
-                      child: IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            final nameToAdd = controller.text;
-                            setState(() {
-                              if (nameToAdd.length >= 3) {
-                                pokedex.insert(
-                                  0,
-                                  Pokemon(nameToAdd, Icons.question_mark),
-                                );
-                                controller.clear();
-                              } else {}
-                            });
-                          }),
-                    )
+                    for (final Pokemon item in pokedex)
+                      TheAmazingRow(
+                        label: item.nom,
+                        icon: item.image,
+                        onDelete: () {
+                          setState(() {
+                            pokedex.remove(item);
+                          });
+                        },
+                      ),
                   ],
                 ),
-                for (final Pokemon item in pokedex)
-                  TheAmazingRow(
-                    label: item.nom,
-                    icon: item.image,
-                  ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -108,38 +149,44 @@ class Pokemon {
 }
 
 class TheAmazingRow extends StatelessWidget {
-  const TheAmazingRow({Key? key, required this.icon, required this.label})
-      : super(key: key);
-// la c'est entre le constructeur
+  const TheAmazingRow({
+    Key? key,
+    required this.icon,
+    required this.label,
+    required this.onDelete,
+  }) : super(key: key);
+
   final IconData icon;
   final String label;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-          child: Row(
-            children: [
-              Icon(icon),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(label),
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {},
-              ),
-            ],
-          )),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        child: Row(
+          children: [
+            Icon(icon),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(label),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: onDelete,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
