@@ -135,6 +135,32 @@ class _MyAppState extends State<MyApp> {
           );
         },
       ),
+      initialRoute: PageName.home,
+      routes: {
+        PageName.detail: (context) => const SecondScreen(),
+      },
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  const SecondScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final pokemonName = ModalRoute.of(context)!.settings.arguments as String;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(pokemonName),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(pokemonName),
+        ),
+      ),
     );
   }
 }
@@ -146,6 +172,11 @@ class Pokemon {
   const Pokemon(this.nom, this.image);
 
   String get nomMaj => nom.toUpperCase();
+}
+
+class PageName {
+  static const String home = '/';
+  static const String detail = '/detail';
 }
 
 class TheAmazingRow extends StatelessWidget {
@@ -162,29 +193,36 @@ class TheAmazingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
-        child: Row(
-          children: [
-            Icon(icon),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(label),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: onDelete,
-            ),
-          ],
+    return InkWell(
+      onTap: () => Navigator.pushNamed(
+        context,
+        PageName.detail,
+        arguments: label,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+          child: Row(
+            children: [
+              Icon(icon),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(label),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: onDelete,
+              ),
+            ],
+          ),
         ),
       ),
     );
